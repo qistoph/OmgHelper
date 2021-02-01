@@ -1,0 +1,42 @@
+light:
+  - platform: mqtt
+    schema: template
+    name: '{{{name}}}'
+    unique_id: '{{{uniq_id}}}'
+    state_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    command_topic: "home/OpenMQTTGateway/commands/MQTTtoRF2"
+    command_on_template: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        {%- if brightness is defined -%}
+          "switchType": 2,
+          "dim": {{ (brightness/16) | int }}
+        {%- else -%}
+          "switchType": 1
+        {%- endif -%}
+      }
+    command_off_template: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "switchType": 0
+      }
+    brightness_template: >-
+      {% if value_json.address == {{{rf2_address}}} and value_json.unit == {{{rf2_unit}}} and value_json.switchType == 2 %}
+        {{ value_json.dim * 16 }}
+      {% else %}
+        {{ state_attr(entity_id, 'brightness') }}
+      {% endif %}
+    state_template: >-
+      {% if value_json.address == {{{rf2_address}}} and value_json.unit == {{{rf2_unit}}} %}
+        {% if value_json.switchType == 2 %}
+          {{'on'}}
+        {% elif value_json.switchType == 1 %}
+          {{'on'}}
+        {% else %}
+          {{'off'}}
+        {% endif %}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}

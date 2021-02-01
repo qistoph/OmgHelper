@@ -1,0 +1,37 @@
+cover:
+  - platform: mqtt
+    name: '{{{name}}}'
+    unique_id: '{{{uniq_id}}}'
+    device_class: awning
+    state_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    command_topic: "home/OpenMQTTGateway/commands/MQTTtoRF2"
+    payload_close: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "switchType": 1
+      }
+    payload_stop: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "switchType": 1
+      }
+    payload_open: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "switchType": 0
+      }
+    state_open: open
+    state_closed: close
+    value_template: >-
+      {% if value_json.address == {{{rf2_address}}} and value_json.unit == {{{rf2_unit}}} %}
+        {% if value_json.switchType == 1 %}
+          {{'close'}}
+        {% else %}
+          {{'open'}}
+        {% endif %}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}
