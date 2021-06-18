@@ -1,0 +1,1 @@
+core/homeassistant/components/mqtt/abbreviations.py

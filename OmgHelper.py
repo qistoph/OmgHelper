@@ -31,16 +31,17 @@ hass_config_file = hass_path + '/config/configuration.yaml'
 mqtt_config_topic = 'homeassistant/switch/#'
 
 mappings = {
-    'RF2_0_0_28226590': ('light-dimmer.yaml', 'Stalamp'),
-    'RF2_1_0_28226590': ('light.yaml', 'Buitenlampen Achter'),
-    'RF4_1_0_28226590': ('light.yaml', 'Buitenlamp Voor'),
-    'RF2_5_0_28226590': ('light-dimmer.yaml', 'Gaaslamp'),
-    'RF2_6_0_28226590': ('light.yaml', 'Meloenlamp'),
-    'RF2_7_0_28226590': ('light.yaml', 'Marokkaanse lamp'),
-    'RF2_8_0_28226590': ('cover.yaml', 'Gordijnen achter'),
+    'RF2_0_0_17517474': ('light-dimmer.yaml', 'Stalamp'),
+    'RF2_1_0_17517474': ('light.yaml', 'Buitenlampen Achter'),
+    'RF4_1_0_17517474': ('light.yaml', 'Buitenlamp Voor'),
+    'RF2_5_0_17517474': ('light-dimmer.yaml', 'Gaaslamp'),
+    'RF2_6_0_17517474': ('light.yaml', 'Meloenlamp'),
+    'RF2_7_0_17517474': ('light.yaml', 'Marokkaanse lamp'),
+    'RF2_8_0_17517474': ('cover.yaml', 'Gordijnen achter'),
 }
 
-from homeassistant.components.mqtt.abbreviations import *
+#from homeassistant.components.mqtt.abbreviations import *
+from abbreviations import *
 
 def interact(_loc):
     import code
