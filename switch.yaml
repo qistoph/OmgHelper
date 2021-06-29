@@ -1,0 +1,33 @@
+switch:
+  - platform: mqtt
+    name: '{{{name}}}'
+    unique_id: '{{{uniq_id}}}'
+    state_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    json_attributes_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    command_topic: "home/OpenMQTTGateway/commands/MQTTtoRF2"
+    state_on: "on"
+    state_off: "off"
+    payload_on: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "period": {{{rf2_period}}},
+        "switchType": 1
+      }
+    payload_off: >-
+      {"unit": {{{rf2_unit}}},
+        "groupBit": {{{rf2_group_bit}}},
+        "address": {{{rf2_address}}},
+        "period": {{{rf2_period}}},
+        "switchType": 0
+      }
+    value_template: >-
+      {% if value_json.address == {{{rf2_address}}} and value_json.unit == {{{rf2_unit}}} %}
+        {% if value_json.switchType == 1 %}
+          {{'on'}}
+        {% else %}
+          {{'off'}}
+        {% endif %}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}

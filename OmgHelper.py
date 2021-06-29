@@ -31,14 +31,25 @@ hass_config_file = hass_path + '/config/configuration.yaml'
 mqtt_config_topic = 'homeassistant/switch/#'
 
 mappings = {
-    'RF2_0_0_17517474': ('light-dimmer.yaml', 'Stalamp'),
-    'RF2_1_0_17517474': ('light.yaml', 'Buitenlampen Achter'),
-    'RF4_1_0_17517474': ('light.yaml', 'Buitenlamp Voor'),
-    'RF2_5_0_17517474': ('light-dimmer.yaml', 'Gaaslamp'),
-    'RF2_6_0_17517474': ('light.yaml', 'Meloenlamp'),
-    'RF2_7_0_17517474': ('light.yaml', 'Marokkaanse lamp'),
-    'RF2_8_0_17517474': ('cover.yaml', 'Gordijnen achter'),
+    #'RF2_0_0_17517474': ('light-dimmer.yaml', 'Stalamp'),
+    #'RF2_1_0_17517474': ('light.yaml', 'Buitenlampen Achter'),
+    'RF2_2_0_17517474': ('sensor.yaml', 'Huiskamer multi'),
+    #'RF2_3_0_17517474': ('light.yaml', 'Aquarium'),
+    #'RF2_4_0_17517474': ('light.yaml', 'Buitenlamp Voor'),
+    #'RF2_5_0_17517474': ('light-dimmer.yaml', 'Gaaslamp'),
+    #'RF2_6_0_17517474': ('light.yaml', 'Meloenlamp'),
+    #'RF2_7_0_17517474': ('light.yaml', 'Marokkaanse lamp'),
+    #'RF2_8_0_17517474': ('cover.yaml', 'Gordijnen achter'),
+    #'RF2_15_0_17517474': ('light-dimmer.yaml', 'Veranda lampen'),
+    #'RF2_0_0_774387': ('switch.yaml', 'Deurbel'),
 }
+
+manual_devs = [
+    {'uniq_id': '84CCA8B1CF76RF2_2_0_17517474'},
+    #{'uniq_id': '84CCA8B1CF76RF2_3_0_17517474'},
+    #{'uniq_id': '84CCA8B1CF76RF2_4_0_17517474'},
+    #{'uniq_id': '84CCA8B1CF76RF2_15_0_17517474'}
+]
 
 #from homeassistant.components.mqtt.abbreviations import *
 from abbreviations import *
@@ -133,12 +144,15 @@ else:
     config = {}
 
 re_kaku_id = re.compile(r'RF2_(\d+)_(\d+)_(\d+)')
-for mqtt_info in mqtt_devices:
-    dev = json.loads(mqtt_info)
-    #print(dev)
+#for mqtt_info in mqtt_devices:
+    #dev = json.loads(mqtt_info)
+for dev in manual_devs:
+    dev['name'] = dev['uniq_id'][12:]
+
+    print(dev)
     if dev['name'] in mappings:
         template_file, new_name = mappings[dev['name']]
-        #print(dev['name'], template_file)
+        print(dev['name'], template_file)
 
         with open(template_file) as f:
             template = yaml.load(f)
@@ -151,6 +165,7 @@ for mqtt_info in mqtt_devices:
                 'rf2_unit': m.group(1),
                 'rf2_group_bit': m.group(2),
                 'rf2_address': m.group(3),
+                'rf2_period': 266, # TODO: read from dev/pl_on?
                 'uniq_id': dev['uniq_id'],
                 'name': new_name
             }
@@ -177,5 +192,7 @@ for mqtt_info in mqtt_devices:
                         config[hass_class][idx] = entity
                     else:
                         config[hass_class].append(entity)
+    else:
+        print(f"No match for {dev['name']}")
 
 yaml.dump(config, sys.stdout)

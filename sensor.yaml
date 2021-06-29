@@ -1,0 +1,16 @@
+sensor:
+  - platform: mqtt
+    name: '{{{name}}}'
+    unique_id: '{{{uniq_id}}}'
+    state_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    json_attributes_topic: "home/OpenMQTTGateway/RF2toMQTT"
+    value_template: >-
+      {% if value_json.address == {{{rf2_address}}} and value_json.unit == {{{rf2_unit}}} %}
+        {% if value_json.switchType == 1 %}
+          {{'on'}}
+        {% else %}
+          {{'off'}}
+        {% endif %}
+      {% else %}
+        {{ states(entity_id) }}
+      {% endif %}
